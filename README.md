@@ -40,3 +40,7 @@ make flash
 * [Longan Nano Documents](https://dl.sipeed.com/LONGAN/Nano/DOC)
 
 ![Longan Nano](https://raw.githubusercontent.com/h1romas4/longan-nano-freertos/master/docs/img00438.jpg)
+
+![Longan Nano](https://raw.githubusercontent.com/h1romas4/longan-nano-freertos/master/docs/ft2232hl-02.jpg)
+
+![Longan Nano](https://raw.githubusercontent.com/h1romas4/longan-nano-freertos/master/docs/ft2232hl-01.jpg)
