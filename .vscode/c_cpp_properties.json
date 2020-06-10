@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Longan Nano",
+            "includePath": [
+                "${workspaceFolder}/framework-gd32vf103-sdk/**",
+                "${workspaceFolder}/src/**",
+                "${env:RISCV_NUCLIE_TOOLCHAIN}/include/**"
+            ],
+            "defines": [
+                "USE_STDPERIPH_DRIVER",
+                "HXTAL_VALUE=8000000U"
+            ],
+            "compilerPath": "${env:RISCV_NUCLIE_TOOLCHAIN}/bin/riscv-nuclei-elf-gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

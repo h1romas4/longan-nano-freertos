@@ -1,0 +1,6 @@
+{
+    "name": "framework-gd32vf103-sdk",
+    "description": "This is gd32vf103 firmware library",
+    "version": "1.0.0",
+    "url": "https://github.com/riscv-mcu/GD32VF103_Firmware_Library"
+}
