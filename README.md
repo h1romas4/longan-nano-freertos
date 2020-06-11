@@ -1,5 +1,7 @@
 # (WIP!) Lognan Nano FreeRTOS testing
 
+*FreeRTOS has not yet been implemented!*
+
 ## Require
 
 * [toolchain-gd32v-linux_x86_64-9.2.0](https://dl.sipeed.com/LONGAN/platformio/dl-packages) (or other host toolchain-gd32v)
