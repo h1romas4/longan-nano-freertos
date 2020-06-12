@@ -83,9 +83,6 @@ CFLAGS := \
 	$(CFLAGS) $(ARCH) $(C_DEFS) $(C_INCLUDES) $(OPT) \
 	-std=gnu11 \
 	-Wall \
-	-march=rv32imac \
-	-mabi=ilp32 \
-	-mcmodel=medlow \
 	-fmessage-length=0 \
 	-fsigned-char \
 	-ffunction-sections \
@@ -123,9 +120,6 @@ LDSCRIPT = $(FIRMWARE_DIR)/RISCV/env_Eclipse/GD32VF103x8.lds
 LIBDIR =
 LDFLAGS = \
 	$(OPT) $(ARCH) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) $(PERIFLIB_SOURCES) \
-	-march=rv32imac \
-	-mabi=ilp32 \
-	-mcmodel=medlow \
 	-nostartfiles \
 	-Xlinker \
 	--gc-sections \
