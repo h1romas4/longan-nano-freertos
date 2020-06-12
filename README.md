@@ -4,9 +4,12 @@
 
 ## Require
 
-* [toolchain-gd32v-linux_x86_64-9.2.0](https://dl.sipeed.com/LONGAN/platformio/dl-packages) (or other host toolchain-gd32v)
+* [toolchain-gd32v-linux_x86_64-9.2.0](https://bintray.com/platformio/dl-packages/toolchain-gd32v#files) (or other host toolchain-gd32v)
 * make
-* dfu-util or [riscv-openocd](https://github.com/riscv/riscv-openocd)([gd32vf103 patched](https://github.com/riscv/riscv-openocd/pull/399/files)) & JTAG debugger(ex.[FT2232HL](https://github.com/arm8686/FT2232HL-Board))
+* flash utils
+    * [tool-openocd-gd32v](https://bintray.com/platformio/dl-packages/tool-openocd-gd32v#files)
+    * dfu-util
+    * [riscv-openocd](https://github.com/riscv/riscv-openocd)([gd32vf103 patched](https://github.com/riscv/riscv-openocd/pull/399/files)) & JTAG debugger(ex.[FT2232HL](https://github.com/arm8686/FT2232HL-Board))
 
 ```shell
 $ riscv-nuclei-elf-gcc --version
