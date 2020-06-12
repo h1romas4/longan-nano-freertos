@@ -2,28 +2,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // https://github.com/microsoft/vscode-cpptools/issues/107
             "name": "Longan Nano Launch (GDB)",
             "type": "cppdbg",
             "request": "launch",
             "filterStderr": true,
             "miDebuggerPath": "${env:RISCV_NUCLIE_TOOLCHAIN}/bin/riscv-nuclei-elf-gdb",
             "MIMode": "gdb",
+            "targetArchitecture": "x64", // dummy
             "program": "${workspaceRoot}/build/gd32vf103.elf",
             "customLaunchSetupCommands": [
                 {
-                    "text": "target remote localhost:3333",
-                    "description": "connect to remote target",
-                    "ignoreFailures": false
-                },
-                {
-                    "text": "monitor reset halt",
-                    "description": "halt",
+                    "text": "set arch riscv:rv32",
+                    "description": "set arch riscv:rv32",
                     "ignoreFailures": false
                 },
                 {
                     "text": "file ${workspaceRoot}/build/gd32vf103.elf",
                     "description": "load symbols",
+                    "ignoreFailures": false
+                },
+                {
+                    "text": "target remote localhost:3333",
+                    "description": "connect to remote target",
                     "ignoreFailures": false
                 },
                 {
@@ -33,10 +33,10 @@
                 }
             ],
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
-            "externalConsole": true,
-            "preLaunchTask": "launch openocd"
+            "externalConsole": false,
+            // "preLaunchTask": "launch openocd"
         }
     ]
 }
