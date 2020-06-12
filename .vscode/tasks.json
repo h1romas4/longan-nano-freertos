@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "launch openocd",
+            "command": "openocd",
+            "args": [
+                "-f",
+                "${workspaceRoot}/openocd/openocd_ft2232.cfg"
+            ],
+        }
+    ]
+}
