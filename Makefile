@@ -127,7 +127,7 @@ LDFLAGS = \
     -static \
 	-nostartfiles \
     -Xlinker --gc-sections \
-	-Xlinker --defsym=__stack_size=1K
+	-Xlinker --defsym=__stack_size=1024
     # -Wl,--start-group \
     # -Wl,--end-group
 	# -Wl,--wrap=_exit \
