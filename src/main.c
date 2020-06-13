@@ -2,7 +2,6 @@
 #include "task.h"
 
 #include "gd32vf103.h"
-#include "systick.h"
 
 #define LED_PIN_R GPIO_PIN_13
 #define LED_PIN_G GPIO_PIN_1
