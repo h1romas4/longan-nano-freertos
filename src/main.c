@@ -36,11 +36,11 @@ void task1(void *param)
         // blue led
         longan_rgb_led(1);
         // NOT WORKING
-        vTaskDelay(1000);
+        vTaskDelay(2000);
         // green led
         longan_rgb_led(2);
         // NOT WORKING
-        vTaskDelay(1000);
+        vTaskDelay(2000);
     }
 }
 
