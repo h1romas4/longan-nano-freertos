@@ -11,8 +11,10 @@ TARGET = gd32vf103
 # debug build?
 DEBUG = 1
 
+# cpu
+ARCH = -march=rv32imac -mabi=ilp32 -mcmodel=medlow
 # optimization
-OPT = -Os #-flto
+OPT = -O0 -g3 #-flto
 
 # Build path
 BUILD_DIR = build
@@ -22,9 +24,8 @@ FIRMWARE_DIR := ./framework-gd32vf103-sdk
 SYSTEM_CLOCK := 8000000U
 
 ######################################
-# source
-######################################
 # C sources
+######################################
 C_SOURCES =  \
 	$(wildcard $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/*.c) \
 	$(wildcard $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/*.c) \
@@ -34,7 +35,9 @@ C_SOURCES =  \
 	$(wildcard ./src/freertos/*.c) \
 	$(wildcard ./src/*.c)
 
+######################################
 # ASM sources
+######################################
 ASM_SOURCES =  \
     $(FIRMWARE_DIR)/RISCV/env_Eclipse/start.S \
     $(FIRMWARE_DIR)/RISCV/env_Eclipse/entry.S \
@@ -49,7 +52,6 @@ PERIFLIB_SOURCES = \
 #######################################
 # binaries
 #######################################
-
 PREFIX = riscv-nuclei-elf-
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc
@@ -63,11 +65,6 @@ BIN = $(CP) -O binary -S
 #######################################
 # CFLAGS
 #######################################
-# cpu
-ARCH = -march=rv32imac -mabi=ilp32 -mcmodel=medlow
-
-# macros for gcc
-
 # C defines
 C_DEFS =  \
 	-DUSE_STDPERIPH_DRIVER \
@@ -96,6 +93,12 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
+# Generate dependency information
+# CFLAGS += -std=gnu11 -MMD -MP #.deps/$(notdir $(<:.c=.d)) -MF$(@:%.o=%.d) -MT$(@:%.o=%.d)
+
+#######################################
+# ASFLAGS
+#######################################
 # AS defines
 AS_DEFS = \
     -DportasmHANDLE_INTERRUPT=handle_trap
@@ -105,12 +108,9 @@ AS_INCLUDES =
 
 # compile gcc flags
 ASFLAGS := \
-	$(CFLAGS) $(ARCH) $(AS_DEFS) $(AS_INCLUDES) $(OPT) \
+	$(CFLAGS) $(OPT) $(ARCH) $(AS_DEFS) $(AS_INCLUDES) \
 	-x \
 	assembler-with-cpp
-
-# Generate dependency information
-# CFLAGS += -std=gnu11 -MMD -MP #.deps/$(notdir $(<:.c=.d)) -MF$(@:%.o=%.d) -MT$(@:%.o=%.d)
 
 #######################################
 # LDFLAGS
@@ -123,11 +123,13 @@ LDSCRIPT = $(FIRMWARE_DIR)/RISCV/env_Eclipse/GD32VF103x8.lds
 # LIBS = -lc_nano -lm
 LIBDIR =
 LDFLAGS = \
-	$(OPT) $(ARCH) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) $(PERIFLIB_SOURCES) \
+	$(CFLAGS) $(OPT) $(ARCH) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) $(PERIFLIB_SOURCES) \
+    -static \
 	-nostartfiles \
-	-Xlinker \
-	--gc-sections \
-	--specs=nano.specs
+    -Xlinker --gc-sections \
+	-Xlinker --defsym=__stack_size=1K
+    # -Wl,--start-group \
+    # -Wl,--end-group
 	# -Wl,--wrap=_exit \
 	# -Wl,--wrap=close \
 	# -Wl,--wrap=fatat \
@@ -139,12 +141,12 @@ LDFLAGS = \
 	# -Wl,--wrap=write_hex \
 	# -Wl,--wrap=write
 
-# default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
 #######################################
 # build the application
 #######################################
+# default action: build all
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
@@ -189,7 +191,6 @@ $(BUILD_DIR):
 #######################################
 # clean up & flash
 #######################################
-
 clean:
 	-rm -fR .deps $(BUILD_DIR)
 
@@ -207,7 +208,4 @@ uart: all
 #######################################
 # dependencies
 #######################################
-
 -include $(shell mkdir .deps 2>/dev/null) $(wildcard .deps/*)
-
-# *** EOF ***
