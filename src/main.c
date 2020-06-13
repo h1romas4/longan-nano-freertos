@@ -31,12 +31,17 @@ void longan_rgb_led(uint8_t led)
 void task1(void *param)
 {
     longan_led_init();
-    // blue led
-    longan_rgb_led(1);
-    // NOT WORKING
-    vTaskDelay(1);
-    // green led
-    longan_rgb_led(2);
+
+    while(1) {
+        // blue led
+        longan_rgb_led(1);
+        // NOT WORKING
+        vTaskDelay(1000);
+        // green led
+        longan_rgb_led(2);
+        // NOT WORKING
+        vTaskDelay(1000);
+    }
 }
 
 int main(void)

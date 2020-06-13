@@ -91,6 +91,7 @@ void vAssertCalled ( void );
 
 /* A header file that defines trace macro can be included here. */
 
-#define configCLINT_BASE_ADDRESS                ( 0xd2000000 )
+#define configMTIME_BASE_ADDRESS		        ( 0x2000BFF8UL )
+#define configMTIMECMP_BASE_ADDRESS		        ( 0x20004000UL )
 
 #endif /* FREERTOS_CONFIG_H */
