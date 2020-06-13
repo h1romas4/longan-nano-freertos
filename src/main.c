@@ -35,7 +35,7 @@ void task1(void *param)
     longan_rgb_led(1);
     // NOT WORKING
     vTaskDelay(1);
-    // red led
+    // green led
     longan_rgb_led(2);
 }
 
