@@ -31,12 +31,14 @@ C_SOURCES =  \
 	$(wildcard $(FIRMWARE_DIR)/RISCV/stubs/*.c) \
 	$(wildcard $(FIRMWARE_DIR)/RISCV/drivers/*.c) \
 	$(wildcard $(FIRMWARE_DIR)/RISCV/env_Eclipse/*.c) \
-	$(wildcard src/*.c)
+	$(wildcard ./src/freertos/*.c) \
+	$(wildcard ./src/*.c)
 
 # ASM sources
 ASM_SOURCES =  \
     $(FIRMWARE_DIR)/RISCV/env_Eclipse/start.S \
-    $(FIRMWARE_DIR)/RISCV/env_Eclipse/entry.S
+    $(FIRMWARE_DIR)/RISCV/env_Eclipse/entry.S \
+    ./src/freertos/portASM.S
 
 ######################################
 # firmware library
@@ -74,9 +76,10 @@ C_DEFS =  \
 # C includes
 C_INCLUDES =  \
 	-I./src/ \
+	-I./src/freertos/include \
 	-I$(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Include \
 	-I$(FIRMWARE_DIR)/GD32VF103_standard_peripheral \
-	-I$(FIRMWARE_DIR)/RISCV/drivers
+	-I$(FIRMWARE_DIR)/RISCV/drivers \
 
 # compile gcc flags
 CFLAGS := \
@@ -94,7 +97,8 @@ CFLAGS += -g -gdwarf-2
 endif
 
 # AS defines
-AS_DEFS =
+AS_DEFS = \
+    -DportasmHANDLE_INTERRUPT=handle_trap
 
 # AS includes
 AS_INCLUDES =
