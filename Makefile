@@ -77,6 +77,7 @@ C_INCLUDES =  \
 	-I$(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Include \
 	-I$(FIRMWARE_DIR)/GD32VF103_standard_peripheral \
 	-I$(FIRMWARE_DIR)/RISCV/drivers \
+	-I$(FIRMWARE_DIR)/RISCV/stubs
 
 # compile gcc flags
 CFLAGS := \

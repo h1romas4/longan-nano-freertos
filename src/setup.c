@@ -1,4 +1,5 @@
 #include "gd32vf103.h"
+#include "stub.h"
 
 #include "FreeRTOS.h"
 #include "setup.h"
