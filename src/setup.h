@@ -3,6 +3,8 @@
 
 #include "FreeRTOS.h"
 
+void prvSetupHardware( void );
+
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                     StackType_t **ppxIdleTaskStackBuffer,
                                     uint32_t *pulIdleTaskStackSize );

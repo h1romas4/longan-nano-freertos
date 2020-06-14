@@ -1,7 +1,8 @@
+#include "gd32vf103.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
-
-#include "gd32vf103.h"
+#include "setup.h"
 
 #define LED_PIN_R GPIO_PIN_13
 #define LED_PIN_G GPIO_PIN_1
@@ -46,6 +47,9 @@ void task1(void *param)
 
 int main(void)
 {
+    /* initialize hardware */
+    prvSetupHardware();
+
     /* Create any tasks defined within main.c itself, or otherwise specific to the
        demo being built. */
     xTaskCreate(task1, "task1", configMINIMAL_STACK_SIZE * 2, NULL, TASK_PRIORITY, NULL);

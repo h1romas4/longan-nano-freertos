@@ -1,6 +1,18 @@
-// https://www.freertos.org/a00110.html
+#include "gd32vf103.h"
+
+#include "FreeRTOS.h"
 #include "setup.h"
 
+/* initialize hardware */
+void prvSetupHardware( void )
+{
+    eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL4_PRIO0);
+    eclic_global_interrupt_enable();
+	// eclic_set_vmode(CLIC_INT_TMR);
+	// eclic_irq_enable(CLIC_INT_TMR, 6, 0);
+}
+
+/* https://www.freertos.org/a00110.html */
 /* configSUPPORT_STATIC_ALLOCATION is set to 1, so the application must provide an
 implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
 used by the Idle task. */
