@@ -134,9 +134,6 @@ task stack, not the ISR stack). */
 		ullNextTime |= ( uint64_t ) ulCurrentTimeLow;
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 		*pullMachineTimerCompareRegister = ullNextTime;
-
-		/* Prepare the time to use after the next tick interrupt. */
-		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
     }
 
 	void vPortSetupTimerInterrupt( void )
@@ -156,7 +153,7 @@ task stack, not the ISR stack). */
     void eclic_mtip_handler( void )
     {
         vPortTimerNextTime();
-
+        /* NOT WORKING */
         if( xTaskIncrementTick() != pdFALSE )
         {
             vTaskSwitchContext();
