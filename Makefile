@@ -101,7 +101,7 @@ endif
 #######################################
 # AS defines
 AS_DEFS = \
-    -DportasmHANDLE_INTERRUPT=handle_trap
+    -DportasmHANDLE_INTERRUPT=exception_handle_trap
 
 # AS includes
 AS_INCLUDES =
