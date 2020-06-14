@@ -142,6 +142,11 @@ task stack, not the ISR stack). */
 
 		/* Prepare the time to use after the next tick interrupt. */
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
+
+        #if( configUSE_GD32V != 0 )
+            eclic_set_vmode(CLIC_INT_TMR);
+            eclic_irq_enable(CLIC_INT_TMR, 6, 0);
+        #endif
 	}
 
 #endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */

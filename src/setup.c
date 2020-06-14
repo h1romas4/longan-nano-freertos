@@ -9,8 +9,6 @@ void prvSetupHardware( void )
 {
     eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL4_PRIO0);
     eclic_global_interrupt_enable();
-	// eclic_set_vmode(CLIC_INT_TMR);
-	// eclic_irq_enable(CLIC_INT_TMR, 6, 0);
 }
 
 void vAssertCalled(void)

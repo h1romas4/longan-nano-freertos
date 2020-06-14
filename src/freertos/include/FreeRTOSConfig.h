@@ -94,4 +94,6 @@ void vAssertCalled ( void );
 #define configMTIME_BASE_ADDRESS		        ( TIMER_CTRL_ADDR + TIMER_MTIME )
 #define configMTIMECMP_BASE_ADDRESS		        ( TIMER_CTRL_ADDR + TIMER_MTIMECMP )
 
+#define configUSE_GD32V 1
+
 #endif /* FREERTOS_CONFIG_H */

@@ -54,7 +54,7 @@
 #define __FREERTOS_RISC_V_EXTENSIONS_H__
 
 #define portasmHAS_SIFIVE_CLINT 0
-#define portasmHAS_GD32V 1
+#define portasmHAS_GD32V 1 /* configUSE_GD32V */
 #define portasmHAS_MTIME 1
 #define portasmADDITIONAL_CONTEXT_SIZE 0 /* Must be even number on 32-bit cores. */
 
