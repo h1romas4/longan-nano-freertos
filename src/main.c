@@ -37,11 +37,11 @@ void task1(void *param)
         // blue led
         longan_rgb_led(1);
         // NOT WORKING
-        vTaskDelay(2000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
         // green led
         longan_rgb_led(2);
         // NOT WORKING
-        vTaskDelay(2000);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
