@@ -167,7 +167,7 @@ test_if_asynchronous:
 
 handle_asynchronous:
 
-#if( portasmHAS_MTIME != 0 )
+#if( portasmHAS_MTIME != 0 && portasmHAS_GD32V == 0 )
 
 	test_if_mtimer:						/* If there is a CLINT then the mtimer is used to generate the tick interrupt. */
 
@@ -305,6 +305,10 @@ xPortStartFirstTask:
 	la t0, freertos_risc_v_trap_handler
 	csrw mtvec, t0
 #endif /* portasmHAS_CLILNT */
+#if ( portasmHAS_GD32V != 0 )
+	la t0, freertos_risc_v_trap_handler
+	csrw mtvec, t0
+#endif
 
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
 	load_x  sp, 0( sp )				 	/* Read sp from first TCB member. */

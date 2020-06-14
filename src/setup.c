@@ -12,24 +12,30 @@ void prvSetupHardware( void )
 	// eclic_irq_enable(CLIC_INT_TMR, 6, 0);
 }
 
+void vAssertCalled(void)
+{
+    // set to break point
+    return;
+}
+
 __attribute__((weak)) uintptr_t exception_handle_nmi()
 {
-  // write(1, "nmi\n", 5);
-  _exit(1);
-  return 0;
+    // write(1, "nmi\n", 5);
+    _exit(1);
+    return 0;
 }
 
 __attribute__((weak)) uintptr_t exception_handle_trap(uintptr_t mcause, uintptr_t sp)
 {
-  if(mcause == 0xFFF) {
-      exception_handle_nmi();
-  }
-  // write(1, "trap\n", 5);
-  // printf("In trap handler, the mcause is %d\n", mcause);
-  // printf("In trap handler, the mepc is 0x%x\n", read_csr(mepc));
-  // printf("In trap handler, the mtval is 0x%x\n", read_csr(mbadaddr));
-  _exit(mcause);
-  return 0;
+    if(mcause == 0xFFF) {
+        exception_handle_nmi();
+    }
+    // write(1, "trap\n", 5);
+    // printf("In trap handler, the mcause is %d\n", mcause);
+    // printf("In trap handler, the mepc is 0x%x\n", read_csr(mepc));
+    // printf("In trap handler, the mtval is 0x%x\n", read_csr(mbadaddr));
+    _exit(mcause);
+    return 0;
 }
 
 /* https://www.freertos.org/a00110.html */
@@ -84,9 +90,4 @@ static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
     Note that, as the array is necessarily of type StackType_t,
     configTIMER_TASK_STACK_DEPTH is specified in words, not bytes. */
     *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
-}
-
-void vAssertCalled(void)
-{
-    return;
 }
