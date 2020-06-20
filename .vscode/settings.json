@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "*.S": "c"
+        "*.S": "c",
+        "*.s": "c"
     }
 }
