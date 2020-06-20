@@ -143,14 +143,13 @@ task stack, not the ISR stack). */
 		/* Prepare the time to use after the next tick interrupt. */
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 
-		/* enable interrupt (NOT WORKING) */
-		eclic_global_interrupt_enable();
-		eclic_irq_enable(CLIC_INT_TMR, 0, 0);
 		/* for watch debug */
 		/*  CSR_MTVT mtvt[7] = freertos_risc_v_trap_handler */
 		/*  CSR_MTVT mtvt[7] = eclic_mtip_handler */
 		volatile uint32_t *mtvt;
 		__asm volatile( "csrr %0, 0x307" : "=r"( mtvt ) );
+		/* enable interrupt */
+		eclic_irq_enable(CLIC_INT_TMR, 0, 0);
 	}
 
 #endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */

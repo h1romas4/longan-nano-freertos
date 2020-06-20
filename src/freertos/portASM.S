@@ -119,7 +119,12 @@ at the top of this file. */
 
 /*-----------------------------------------------------------*/
 
+#if( portasmHAS_GD32V_CLINT != 0 )
+/* In CLIC mode, the trap entry must be 64bytes aligned */
+.align 6
+#else
 .align 8
+#endif
 .func
 #if( portasmHAS_GD32V_CLINT != 0 )
 eclic_mtip_handler:
@@ -312,10 +317,24 @@ xPortStartFirstTask:
 	csrw mtvec, t0
 #endif /* portasmHAS_CLILNT */
 #if( portasmHAS_GD32V_CLINT != 0 )
+	/* override framework-gd32vf103-sdk/env_Eclipse/handlers.c::handle_trap */
+	/*  080033c0  w      .text	00000000 trap_entry                   */
+	/*  auipc   t0,0x3  <-                                            */
+    /*  addi    t0,t0,538 # 80033c0 <trap_entry>                      */
+    /*  csrw    CSR_MTVEC, t0                                         */
+	/*  after eclic_mode_enable() CSR_MTVEC | 0x03                    */
+	/* (gdb) -exec info registers                                     */
+    csrr t0, mtvec /* 080033c3 */
+
     /* Intial the CSR MTVEC for the Trap ane NMI base addr*/
     la t0, freertos_risc_v_trap_handler
     /* #define CSR_MTVEC 0x305 */
-    csrw 0x305, t0
+	/*  08003500 g       .text	00000000 freertos_risc_v_trap_handler */
+	/*  auipc   t0,0x0                                                */
+	/*  addi    t0,t0,-516 # 8003500 <eclic_mtip_handler>             */
+	/*  csrw    mtvec, t0                                             */
+	/* (gdb) -exec info registers                                     */
+    csrw mtvec, t0 /* 08003500 */
 #endif /* portasmHAS_CLILNT */
 
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
