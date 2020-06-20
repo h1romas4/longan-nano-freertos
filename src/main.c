@@ -33,16 +33,12 @@ void task1(void *param)
 {
     longan_led_init();
 
-    while(1) {
-        // blue led
-        longan_rgb_led(1);
-        // NOT WORKING
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        // green led
-        longan_rgb_led(2);
-        // NOT WORKING
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+    // blue led
+    longan_rgb_led(1);
+    // NOT WORKING (mtime interrupt)
+    vTaskDelay(1);
+    // green led
+    longan_rgb_led(2);
 }
 
 int main(void)
