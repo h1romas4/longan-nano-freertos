@@ -9,7 +9,9 @@
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",
-                "HXTAL_VALUE=8000000U"
+                "HXTAL_VALUE=8000000U",
+                "portasmHAS_MTIME=1",
+                "portasmHAS_GD32V_CLINT=1"
             ],
             "compilerPath": "${env:RISCV_NUCLIE_TOOLCHAIN}/bin/riscv-nuclei-elf-gcc",
             "cStandard": "gnu11",
