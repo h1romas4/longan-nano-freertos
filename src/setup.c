@@ -7,8 +7,7 @@
 /* initialize hardware */
 void prvSetupHardware( void )
 {
-    eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL4_PRIO0);
-    eclic_global_interrupt_enable();
+    return;
 }
 
 void vAssertCalled(void)
