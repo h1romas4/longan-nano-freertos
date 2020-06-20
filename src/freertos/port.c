@@ -118,13 +118,18 @@ task stack, not the ISR stack). */
 
 #if( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIMECMP_BASE_ADDRESS != 0 )
 
-    void vPortTimerNextTime( void )
-    {
+	void vPortSetupTimerInterrupt( void )
+	{
 	uint32_t ulCurrentTimeHigh, ulCurrentTimeLow;
 	volatile uint32_t * const pulTimeHigh = ( volatile uint32_t * const ) ( ( configMTIME_BASE_ADDRESS ) + 4UL ); /* 8-byte typer so high 32-bit word is 4 bytes up. */
 	volatile uint32_t * const pulTimeLow = ( volatile uint32_t * const ) ( configMTIME_BASE_ADDRESS );
+	volatile uint32_t ulHartId;
 
-		do {
+		__asm volatile( "csrr %0, mhartid" : "=r"( ulHartId ) );
+		pullMachineTimerCompareRegister  = ( volatile uint64_t * ) ( ullMachineTimerCompareRegisterBase + ( ulHartId * sizeof( uint64_t ) ) );
+
+		do
+		{
 			ulCurrentTimeHigh = *pulTimeHigh;
 			ulCurrentTimeLow = *pulTimeLow;
 		} while( ulCurrentTimeHigh != *pulTimeHigh );
@@ -134,31 +139,10 @@ task stack, not the ISR stack). */
 		ullNextTime |= ( uint64_t ) ulCurrentTimeLow;
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 		*pullMachineTimerCompareRegister = ullNextTime;
-    }
 
-	void vPortSetupTimerInterrupt( void )
-	{
-	volatile uint32_t ulHartId;
-
-		__asm volatile( "csrr %0, mhartid" : "=r"( ulHartId ) );
-		pullMachineTimerCompareRegister  = ( volatile uint64_t * ) ( ullMachineTimerCompareRegisterBase + ( ulHartId * sizeof( uint64_t ) ) );
-
-        vPortTimerNextTime();
-
-        /* #if( configUSE_GD32V != 0 ) */
-        eclic_irq_enable(CLIC_INT_TMR, 1 << 4, 0);
-        /* #endif */
+		/* Prepare the time to use after the next tick interrupt. */
+		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 	}
-
-    void eclic_mtip_handler( void )
-    {
-        vPortTimerNextTime();
-        /* NOT WORKING */
-        if( xTaskIncrementTick() != pdFALSE )
-        {
-            vTaskSwitchContext();
-        }
-    }
 
 #endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */
 /*-----------------------------------------------------------*/

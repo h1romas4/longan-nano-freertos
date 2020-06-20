@@ -166,6 +166,61 @@ test_if_asynchronous:
 	store_x a1, 0( sp )					/* Asynch so save unmodified exception return address. */
 
 handle_asynchronous:
+
+#if( portasmHAS_MTIME != 0 )
+
+	test_if_mtimer:						/* If there is a CLINT then the mtimer is used to generate the tick interrupt. */
+
+		addi t0, x0, 1
+
+		slli t0, t0, __riscv_xlen - 1   /* LSB is already set, shift into MSB.  Shift 31 on 32-bit or 63 on 64-bit cores. */
+		addi t1, t0, 7					/* 0x8000[]0007 == machine timer interrupt. */
+		bne a0, t1, test_if_external_interrupt
+
+		load_x t0, pullMachineTimerCompareRegister  /* Load address of compare register into t0. */
+		load_x t1, pullNextTime  		/* Load the address of ullNextTime into t1. */
+
+		#if( __riscv_xlen == 32 )
+
+			/* Update the 64-bit mtimer compare match value in two 32-bit writes. */
+			li t4, -1
+			lw t2, 0(t1)				/* Load the low word of ullNextTime into t2. */
+			lw t3, 4(t1)				/* Load the high word of ullNextTime into t3. */
+			sw t4, 0(t0)				/* Low word no smaller than old value to start with - will be overwritten below. */
+			sw t3, 4(t0)				/* Store high word of ullNextTime into compare register.  No smaller than new value. */
+			sw t2, 0(t0)				/* Store low word of ullNextTime into compare register. */
+			lw t0, uxTimerIncrementsForOneTick	/* Load the value of ullTimerIncrementForOneTick into t0 (could this be optimized by storing in an array next to pullNextTime?). */
+			add t4, t0, t2				/* Add the low word of ullNextTime to the timer increments for one tick (assumes timer increment for one tick fits in 32-bits). */
+			sltu t5, t4, t2				/* See if the sum of low words overflowed (what about the zero case?). */
+			add t6, t3, t5				/* Add overflow to high word of ullNextTime. */
+			sw t4, 0(t1)				/* Store new low word of ullNextTime. */
+			sw t6, 4(t1)				/* Store new high word of ullNextTime. */
+
+		#endif /* __riscv_xlen == 32 */
+
+		#if( __riscv_xlen == 64 )
+
+			/* Update the 64-bit mtimer compare match value. */
+			ld t2, 0(t1)			 	/* Load ullNextTime into t2. */
+			sd t2, 0(t0)				/* Store ullNextTime into compare register. */
+			ld t0, uxTimerIncrementsForOneTick  /* Load the value of ullTimerIncrementForOneTick into t0 (could this be optimized by storing in an array next to pullNextTime?). */
+			add t4, t0, t2				/* Add ullNextTime to the timer increments for one tick. */
+			sd t4, 0(t1)				/* Store ullNextTime. */
+
+		#endif /* __riscv_xlen == 64 */
+
+		load_x sp, xISRStackTop			/* Switch to ISR stack before function call. */
+		jal xTaskIncrementTick
+		beqz a0, processed_source		/* Don't switch context if incrementing tick didn't unblock a task. */
+		jal vTaskSwitchContext
+		j processed_source
+
+	test_if_external_interrupt:			/* If there is a CLINT and the mtimer interrupt is not pending then check to see if an external interrupt is pending. */
+		addi t1, t1, 4					/* 0x80000007 + 4 = 0x8000000b == Machine external interrupt. */
+		bne a0, t1, as_yet_unhandled	/* Something as yet unhandled. */
+
+#endif /* portasmHAS_MTIME */
+
 	load_x sp, xISRStackTop				/* Switch to ISR stack before function call. */
 	jal portasmHANDLE_INTERRUPT			/* Jump to the interrupt handler if there is no CLINT or if there is a CLINT and it has been determined that an external interrupt is pending. */
 	j processed_source
@@ -250,6 +305,13 @@ xPortStartFirstTask:
 	la t0, freertos_risc_v_trap_handler
 	csrw mtvec, t0
 #endif /* portasmHAS_CLILNT */
+#if( portasmHAS_GD32V_CLINT != 0 )
+    /* Intial the CSR MTVEC for the Trap ane NMI base addr*/
+    la t0, freertos_risc_v_trap_handler
+    /* #define CSR_MTVEC 0x305 */
+    csrw 0x305, t0
+#endif /* portasmHAS_CLILNT */
+
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
 	load_x  sp, 0( sp )				 	/* Read sp from first TCB member. */
 
