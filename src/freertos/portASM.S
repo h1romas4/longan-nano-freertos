@@ -116,6 +116,9 @@ at the top of this file. */
 .extern uxTimerIncrementsForOneTick /* size_t type so 32-bit on 32-bit core and 64-bits on 64-bit core. */
 .extern xISRStackTop
 .extern portasmHANDLE_INTERRUPT
+#if( portasmHAS_GD32V_CLINT != 0 )
+.extern eclic_mode_enable
+#endif
 
 /*-----------------------------------------------------------*/
 
@@ -335,6 +338,12 @@ xPortStartFirstTask:
 	/*  csrw    mtvec, t0                                             */
 	/* (gdb) -exec info registers                                     */
     csrw mtvec, t0 /* 08003500 */
+	/* eclic_mode_enable call after mvec 08003503 */
+	jal eclic_mode_enable
+	/* eclic_mode_enable after ecall                        */
+	/*  mcause  0x3800000b (111000000000000000000000001011) */
+	/*  mepc    0x8002d6e  (ecall)                          */
+	/*  mstatus 0x1880     (000000000000000001100010000000) */
 #endif /* portasmHAS_CLILNT */
 
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
