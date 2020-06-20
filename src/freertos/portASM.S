@@ -103,6 +103,9 @@ at the top of this file. */
 .global xPortStartFirstTask
 .global freertos_risc_v_trap_handler
 .global pxPortInitialiseStack
+#if( portasmHAS_GD32V_CLINT != 0 )
+.global eclic_mtip_handler
+#endif
 .extern pxCurrentTCB
 .extern ulPortTrapHandler
 .extern vTaskSwitchContext
@@ -118,6 +121,9 @@ at the top of this file. */
 
 .align 8
 .func
+#if( portasmHAS_GD32V_CLINT != 0 )
+eclic_mtip_handler:
+#endif
 freertos_risc_v_trap_handler:
 	addi sp, sp, -portCONTEXT_SIZE
 	store_x x1, 1 * portWORD_SIZE( sp )
