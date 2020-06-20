@@ -39,9 +39,9 @@ C_SOURCES =  \
 # ASM sources
 ######################################
 ASM_SOURCES =  \
-    $(FIRMWARE_DIR)/RISCV/env_Eclipse/start.S \
-    $(FIRMWARE_DIR)/RISCV/env_Eclipse/entry.S \
-    ./src/freertos/portASM.S
+	$(FIRMWARE_DIR)/RISCV/env_Eclipse/start.S \
+	$(FIRMWARE_DIR)/RISCV/env_Eclipse/entry.S \
+	./src/freertos/portASM.S
 
 ######################################
 # firmware library
@@ -102,7 +102,7 @@ endif
 #######################################
 # AS defines
 AS_DEFS = \
-    -DportasmHANDLE_INTERRUPT=exception_handle_trap
+	-DportasmHANDLE_INTERRUPT=exception_handle_trap
 
 # AS includes
 AS_INCLUDES =
@@ -125,12 +125,12 @@ LDSCRIPT = $(FIRMWARE_DIR)/RISCV/env_Eclipse/GD32VF103x8.lds
 LIBDIR =
 LDFLAGS = \
 	$(CFLAGS) $(OPT) $(ARCH) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) $(PERIFLIB_SOURCES) \
-    -static \
+	-static \
 	-nostartfiles \
-    -Xlinker --gc-sections \
+	-Xlinker --gc-sections \
 	-Xlinker --defsym=__stack_size=1024
-    # -Wl,--start-group \
-    # -Wl,--end-group
+	# -Wl,--start-group \
+	# -Wl,--end-group
 	# -Wl,--wrap=_exit \
 	# -Wl,--wrap=close \
 	# -Wl,--wrap=fatat \
