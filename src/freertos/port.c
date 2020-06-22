@@ -144,12 +144,15 @@ task stack, not the ISR stack). */
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 
 		/* for watch debug */
-		/*  CSR_MTVT mtvt[7] = freertos_risc_v_trap_handler */
-		/*  CSR_MTVT mtvt[7] = eclic_mtip_handler */
 		volatile uint32_t *mtvt;
 		__asm volatile( "csrr %0, 0x307" : "=r"( mtvt ) );
 		/* enable interrupt */
+		/* CSR_MTVT mtvt[3] = eclic_msip_handler (0x08003500) */
+		eclic_irq_enable(CLIC_INT_SFT, 0, 0);
+		eclic_set_vmode(CLIC_INT_SFT);
+		/* CSR_MTVT mtvt[7] = eclic_mtip_handler (0x08003500) */
 		eclic_irq_enable(CLIC_INT_TMR, 0, 0);
+		eclic_set_vmode(CLIC_INT_TMR);
 	}
 
 #endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */

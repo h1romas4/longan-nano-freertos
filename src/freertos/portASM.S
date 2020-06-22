@@ -105,6 +105,7 @@ at the top of this file. */
 .global pxPortInitialiseStack
 #if( portasmHAS_GD32V_CLINT != 0 )
 .global eclic_mtip_handler
+.global eclic_msip_handler
 #endif
 .extern pxCurrentTCB
 .extern ulPortTrapHandler
@@ -130,6 +131,7 @@ at the top of this file. */
 #endif
 .func
 #if( portasmHAS_GD32V_CLINT != 0 )
+eclic_msip_handler:
 eclic_mtip_handler:
 #endif
 freertos_risc_v_trap_handler:
@@ -342,8 +344,10 @@ xPortStartFirstTask:
 	jal eclic_mode_enable
 	/* eclic_mode_enable after ecall                        */
 	/*  mcause  0x3800000b (111000000000000000000000001011) */
+	/*    is_exception: infinit loop!                       */
 	/*  mepc    0x8002d6e  (ecall)                          */
 	/*  mstatus 0x1880     (000000000000000001100010000000) */
+	/*    SD:0 VM:00 MXR:0 PUM:0 MPRV:0 XS:0 FS:0 MPP:3 HPP:0 SPP:0 MPIE:1 HPIE:0 SPIE:0 UPIE:0 MIE:0 HIE:0 SIE:0 UIE:0 */
 #endif /* portasmHAS_CLILNT */
 
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
