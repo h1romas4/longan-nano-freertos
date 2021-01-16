@@ -26,7 +26,7 @@ void switch_m2u_mode(){
     asm volatile ("csrw mepc, x6":::);
     asm volatile ("mret":::);
     asm volatile ("1:":::);
-} 
+}
 
 uint32_t mtime_lo(void)
 {
@@ -116,16 +116,16 @@ uint32_t get_cpu_freq()
 
 
 
-  
+
 void eclic_init ( uint32_t num_irq )
 {
 
   typedef volatile uint32_t vuint32_t;
 
-  //clear cfg register 
+  //clear cfg register
   *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_CFG_OFFSET)=0;
 
-  //clear minthresh register 
+  //clear minthresh register
   *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET)=0;
 
   //clear all IP/IE/ATTR/CTRL bits for all interrupt sources
@@ -189,19 +189,19 @@ uint8_t eclic_get_mth  (){
   return *(volatile uint8_t*)(ECLIC_ADDR_BASE+ECLIC_MTH_OFFSET);
 }
 
-//sets nlbits 
+//sets nlbits
 void eclic_set_nlbits(uint8_t nlbits) {
   //shift nlbits to correct position
   uint8_t nlbits_shifted = nlbits << ECLIC_CFG_NLBITS_LSB;
 
-  //read the current cliccfg 
+  //read the current cliccfg
   uint8_t old_cliccfg = eclic_get_cliccfg();
-  uint8_t new_cliccfg = (old_cliccfg & (~ECLIC_CFG_NLBITS_MASK)) | (ECLIC_CFG_NLBITS_MASK & nlbits_shifted); 
+  uint8_t new_cliccfg = (old_cliccfg & (~ECLIC_CFG_NLBITS_MASK)) | (ECLIC_CFG_NLBITS_MASK & nlbits_shifted);
 
   eclic_set_cliccfg(new_cliccfg);
 }
 
-//get nlbits 
+//get nlbits
 uint8_t eclic_get_nlbits(void) {
   //extract nlbits
   uint8_t nlbits = eclic_get_cliccfg();
@@ -221,7 +221,7 @@ void eclic_set_irq_lvl(uint32_t source, uint8_t lvl) {
   lvl = lvl >> (8-nlbits);
   //shift lvl into correct bit position
   lvl = lvl << (8-nlbits);
- 
+
   //write to clicintctrl
   uint8_t current_intctrl = eclic_get_intctrl(source);
   //shift intctrl left to mask off unused bits
@@ -259,7 +259,7 @@ void eclic_set_irq_lvl_abs(uint32_t source, uint8_t lvl_abs) {
 
   //shift lvl_abs into correct bit position
   uint8_t lvl = lvl_abs << (8-nlbits);
- 
+
   //write to clicintctrl
   uint8_t current_intctrl = eclic_get_intctrl(source);
   //shift intctrl left to mask off unused bits
@@ -336,18 +336,18 @@ void eclic_mode_enable() {
   write_csr(mtvec,mtvec_value);
 }
 
-//sets vector-mode or non-vector mode 
+//sets vector-mode or non-vector mode
 void eclic_set_vmode(uint32_t source) {
-  //read the current attr 
+  //read the current attr
   uint8_t old_intattr = eclic_get_intattr(source);
       // Keep other bits unchanged and only set the LSB bit
-  uint8_t new_intattr = (old_intattr | 0x1); 
+  uint8_t new_intattr = (old_intattr | 0x1);
 
   eclic_set_intattr(source,new_intattr);
 }
 
 void eclic_set_nonvmode(uint32_t source) {
-  //read the current attr 
+  //read the current attr
   uint8_t old_intattr = eclic_get_intattr(source);
       // Keep other bits unchanged and only clear the LSB bit
   uint8_t new_intattr = (old_intattr & (~0x1));
@@ -356,11 +356,11 @@ void eclic_set_nonvmode(uint32_t source) {
 }
 
 //sets interrupt as level sensitive
-//Bit 1, trig[0], is defined as "edge-triggered" (0: level-triggered, 1: edge-triggered); 
+//Bit 1, trig[0], is defined as "edge-triggered" (0: level-triggered, 1: edge-triggered);
 //Bit 2, trig[1], is defined as "negative-edge" (0: positive-edge, 1: negative-edge).
 
 void eclic_set_level_trig(uint32_t source) {
-  //read the current attr 
+  //read the current attr
   uint8_t old_intattr = eclic_get_intattr(source);
       // Keep other bits unchanged and only clear the bit 1
   uint8_t new_intattr = (old_intattr & (~0x2));
@@ -369,23 +369,23 @@ void eclic_set_level_trig(uint32_t source) {
 }
 
 void eclic_set_posedge_trig(uint32_t source) {
-  //read the current attr 
+  //read the current attr
   uint8_t old_intattr = eclic_get_intattr(source);
       // Keep other bits unchanged and only set the bit 1
   uint8_t new_intattr = (old_intattr | 0x2);
       // Keep other bits unchanged and only clear the bit 2
-  new_intattr = (old_intattr & (~0x4));
+  new_intattr = (new_intattr & (~0x4));
 
   eclic_set_intattr(source,new_intattr);
 }
 
 void eclic_set_negedge_trig(uint32_t source) {
-  //read the current attr 
+  //read the current attr
   uint8_t old_intattr = eclic_get_intattr(source);
       // Keep other bits unchanged and only set the bit 1
   uint8_t new_intattr = (old_intattr | 0x2);
       // Keep other bits unchanged and only set the bit 2
-  new_intattr = (old_intattr | 0x4);
+  new_intattr = (new_intattr | 0x4);
 
   eclic_set_intattr(source,new_intattr);
 }
