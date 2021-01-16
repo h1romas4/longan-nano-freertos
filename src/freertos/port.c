@@ -34,6 +34,10 @@
 #include "task.h"
 #include "portmacro.h"
 
+#define ECLIC_INT_MSIP          3
+#define ECLIC_INT_MTIP          7
+#define ECLIC_INT_MEIP          11
+
 /* Standard includes. */
 #include "string.h"
 
@@ -143,16 +147,13 @@ task stack, not the ISR stack). */
 		/* Prepare the time to use after the next tick interrupt. */
 		ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
 
-		/* for watch debug */
-		volatile uint32_t *mtvt;
-		__asm volatile( "csrr %0, 0x307" : "=r"( mtvt ) );
 		/* enable interrupt */
-		/* CSR_MTVT mtvt[3] = eclic_msip_handler (0x08003500) */
-		eclic_irq_enable(CLIC_INT_SFT, 0, 0);
-		eclic_set_vmode(CLIC_INT_SFT);
-		/* CSR_MTVT mtvt[7] = eclic_mtip_handler (0x08003500) */
-		eclic_irq_enable(CLIC_INT_TMR, 0, 0);
-		eclic_set_vmode(CLIC_INT_TMR);
+	    uint8_t mtime_intattr;
+		mtime_intattr = eclic_get_intattr(ECLIC_INT_MTIP);
+		mtime_intattr |= ECLIC_INT_ATTR_SHV;
+		eclic_set_intattr(ECLIC_INT_MTIP, mtime_intattr);
+		eclic_enable_interrupt(ECLIC_INT_MTIP);
+		eclic_set_irq_lvl_abs(ECLIC_INT_MTIP, 1);
 	}
 
 #endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */

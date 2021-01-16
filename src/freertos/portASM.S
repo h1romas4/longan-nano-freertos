@@ -103,10 +103,6 @@ at the top of this file. */
 .global xPortStartFirstTask
 .global freertos_risc_v_trap_handler
 .global pxPortInitialiseStack
-#if( portasmHAS_GD32V_CLINT != 0 )
-.global eclic_mtip_handler
-.global eclic_msip_handler
-#endif
 .extern pxCurrentTCB
 .extern ulPortTrapHandler
 .extern vTaskSwitchContext
@@ -117,23 +113,11 @@ at the top of this file. */
 .extern uxTimerIncrementsForOneTick /* size_t type so 32-bit on 32-bit core and 64-bits on 64-bit core. */
 .extern xISRStackTop
 .extern portasmHANDLE_INTERRUPT
-#if( portasmHAS_GD32V_CLINT != 0 )
-.extern eclic_mode_enable
-#endif
 
 /*-----------------------------------------------------------*/
 
-#if( portasmHAS_GD32V_CLINT != 0 )
-/* In CLIC mode, the trap entry must be 64bytes aligned */
-.align 6
-#else
 .align 8
-#endif
 .func
-#if( portasmHAS_GD32V_CLINT != 0 )
-eclic_msip_handler:
-eclic_mtip_handler:
-#endif
 freertos_risc_v_trap_handler:
 	addi sp, sp, -portCONTEXT_SIZE
 	store_x x1, 1 * portWORD_SIZE( sp )
@@ -320,34 +304,6 @@ xPortStartFirstTask:
 	outside of this file. */
 	la t0, freertos_risc_v_trap_handler
 	csrw mtvec, t0
-#endif /* portasmHAS_CLILNT */
-#if( portasmHAS_GD32V_CLINT != 0 )
-	/* override framework-gd32vf103-sdk/env_Eclipse/handlers.c::handle_trap */
-	/*  080033c0  w      .text	00000000 trap_entry                   */
-	/*  auipc   t0,0x3  <-                                            */
-    /*  addi    t0,t0,538 # 80033c0 <trap_entry>                      */
-    /*  csrw    CSR_MTVEC, t0                                         */
-	/*  after eclic_mode_enable() CSR_MTVEC | 0x03                    */
-	/* (gdb) -exec info registers                                     */
-    csrr t0, mtvec /* 080033c3 */
-
-    /* Intial the CSR MTVEC for the Trap ane NMI base addr*/
-    la t0, freertos_risc_v_trap_handler
-    /* #define CSR_MTVEC 0x305 */
-	/*  08003500 g       .text	00000000 freertos_risc_v_trap_handler */
-	/*  auipc   t0,0x0                                                */
-	/*  addi    t0,t0,-516 # 8003500 <eclic_mtip_handler>             */
-	/*  csrw    mtvec, t0                                             */
-	/* (gdb) -exec info registers                                     */
-    csrw mtvec, t0 /* 08003500 */
-	/* eclic_mode_enable call after mvec 08003503 */
-	jal eclic_mode_enable
-	/* eclic_mode_enable after ecall                        */
-	/*  mcause  0x3800000b (111000000000000000000000001011) */
-	/*    is_exception: infinit loop!                       */
-	/*  mepc    0x8002d6e  (ecall)                          */
-	/*  mstatus 0x1880     (000000000000000001100010000000) */
-	/*    SD:0 VM:00 MXR:0 PUM:0 MPRV:0 XS:0 FS:0 MPP:3 HPP:0 SPP:0 MPIE:1 HPIE:0 SPIE:0 UPIE:0 MIE:0 HIE:0 SIE:0 UIE:0 */
 #endif /* portasmHAS_CLILNT */
 
 	load_x  sp, pxCurrentTCB			/* Load pxCurrentTCB. */
