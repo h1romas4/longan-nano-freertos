@@ -52,6 +52,49 @@ make flash
 2. Run Task: "launch openocd"
 3. Run Debug: "Longan Nano Launch (GDB)"
 
+## JTAG flash log
+
+```
+openocd: error while loading shared libraries: libusb-0.1.so.4: cannot open shared object file: No such file or directory
+$ sudo apt-get install libusb-dev
+```
+
+```
+openocd -f ./openocd/openocd_ft2232.cfg -c "flash_elf {build/gd32vf103.elf}"
+Open On-Chip Debugger 0.10.0+dev-00859-g95a8cd9b5-dirty (2020-06-07-17:17)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : clock speed 1000 kHz
+Info : JTAG tap: riscv.cpu tap/device found: 0x1000563d (mfg: 0x31e (Andes Technology Corporation), part: 0x0005, ver: 0x1)
+Warn : JTAG tap: riscv.cpu       UNEXPECTED: 0x1000563d (mfg: 0x31e (Andes Technology Corporation), part: 0x0005, ver: 0x1)
+Error: JTAG tap: riscv.cpu  expected 1 of 1: 0x1e200a6d (mfg: 0x536 (Nuclei System Technology Co Ltd), part: 0xe200, ver: 0x1)
+Info : JTAG tap: auto0.tap tap/device found: 0x790007a3 (mfg: 0x3d1 (GigaDevice Semiconductor (Beijing)), part: 0x9000, ver: 0x7)
+Error: Trying to use configured scan chain anyway...
+Warn : Bypassing JTAG setup events due to errors
+Info : datacount=4 progbufsize=2
+Info : Examined RISC-V core; found 1 harts
+Info :  hart 0: XLEN=32, misa=0x40901105
+Info : Listening on port 3333 for gdb connections
+flash_elf
+Info : device id = 0x19060410
+Info : flash_size_in_kb = 0x00000080
+Info : flash size = 128kbytes
+Info : JTAG tap: riscv.cpu tap/device found: 0x1000563d (mfg: 0x31e (Andes Technology Corporation), part: 0x0005, ver: 0x1)
+Warn : JTAG tap: riscv.cpu       UNEXPECTED: 0x1000563d (mfg: 0x31e (Andes Technology Corporation), part: 0x0005, ver: 0x1)
+Error: JTAG tap: riscv.cpu  expected 1 of 1: 0x1e200a6d (mfg: 0x536 (Nuclei System Technology Co Ltd), part: 0xe200, ver: 0x1)
+Info : JTAG tap: auto0.tap tap/device found: 0x790007a3 (mfg: 0x3d1 (GigaDevice Semiconductor (Beijing)), part: 0x9000, ver: 0x7)
+Error: Trying to use configured scan chain anyway...
+Warn : Bypassing JTAG setup events due to errors
+** Programming Started **
+** Programming Finished **
+** Verify Started **
+** Verified OK **
+Info : Hart 0 unexpectedly reset!
+
+make: [Makefile:194: flash] エラー 1 (無視されました)
+```
+
 ## Note
 
 * [Longan Nano Documents](https://dl.sipeed.com/LONGAN/Nano/DOC)
